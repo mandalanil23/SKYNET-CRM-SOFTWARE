@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Skynet CRM — App Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#070B18;
+    --panel:#111A32;
+    --panel-2:#18233F;
+    --line:rgba(255,255,255,.10);
+    --red:#EF2C24;
+    --amber:#FFB020;
+    --cyan:#2FD9E8;
+    --violet:#8B5CF6;
+    --lime:#7BE05B;
+    --paper:#EEF2FF;
+    --muted:#8B98BE;
+    --radius:18px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(900px 520px at 12% -8%, rgba(239,44,36,.22), transparent 60%),
+      radial-gradient(760px 480px at 92% 4%, rgba(47,217,232,.16), transparent 62%),
+      radial-gradient(680px 520px at 50% 110%, rgba(139,92,246,.18), transparent 60%),
+      var(--ink);
+    color:var(--paper);
+    font-family:'Outfit',system-ui,sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* moving flight-path grid in the background */
+  .sky-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size:64px 64px;
+    transform:perspective(700px) rotateX(62deg) translateY(-8%);
+    transform-origin:50% 0%;
+    mask-image:linear-gradient(180deg, rgba(0,0,0,.55), transparent 72%);
+    -webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,.55), transparent 72%);
+    animation:drift 26s linear infinite;
+  }
+  @keyframes drift{ to{ background-position:0 640px, 0 0; } }
+
+  .wrap{position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:22px 20px 60px;}
+
+  /* ---------- Header ---------- */
+  header.top{
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    padding:14px 18px;
+    background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    backdrop-filter:blur(14px);
+    box-shadow:0 22px 40px -26px rgba(0,0,0,.9);
+  }
+  .brand{display:flex; align-items:center; gap:12px; min-width:0;}
+  .brand-mark{
+    width:44px;height:44px;border-radius:12px;flex:none;
+    background:linear-gradient(145deg,#ff5a4e,var(--red) 55%,#a01008);
+    display:grid;place-items:center;
+    font-family:'Chakra Petch',sans-serif;font-weight:700;font-size:20px;color:#fff;
+    box-shadow:0 10px 22px -8px rgba(239,44,36,.8), inset 0 1px 0 rgba(255,255,255,.45);
+    transform:translateZ(0);
+  }
+  .brand-text h1{
+    font-family:'Chakra Petch',sans-serif;
+    font-size:20px; letter-spacing:.16em; margin:0; text-transform:uppercase;
+  }
+  .brand-text p{
+    margin:2px 0 0; font-size:11.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted);
+  }
+  .top-right{margin-left:auto; display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .search{
+    display:flex; align-items:center; gap:8px;
+    background:rgba(7,11,24,.6); border:1px solid var(--line);
+    border-radius:999px; padding:9px 14px;
+  }
+  .search input{
+    background:transparent;border:0;outline:0;color:var(--paper);
+    font-family:'Outfit',sans-serif;font-size:14px;width:180px;
+  }
+  .search input::placeholder{color:#6C7A9E;}
+  .live-dot{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--muted);
+  }
+  .live-dot i{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime);animation:pulse 1.8s ease-in-out infinite;}
+  @keyframes pulse{50%{opacity:.35;}}
+
+  /* ---------- Hero with 3D box ---------- */
+  .hero{
+    display:grid; grid-template-columns:1.35fr .65fr; gap:24px; align-items:center;
+    margin:26px 0 8px;
+    padding:30px 28px;
+    border:1px solid var(--line); border-radius:26px;
+    background:linear-gradient(135deg, rgba(239,44,36,.16), rgba(17,26,50,.75) 42%, rgba(47,217,232,.14));
+    box-shadow:0 40px 70px -50px #000;
+  }
+  .hero h2{
+    font-family:'Chakra Petch',sans-serif; font-weight:700;
+    font-size:clamp(26px,4.2vw,42px); line-height:1.05; margin:0 0 12px; letter-spacing:.01em;
+  }
+  .hero h2 span{
+    background:linear-gradient(92deg,var(--red),var(--amber));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p{margin:0 0 18px; color:#B9C4E4; max-width:48ch; font-size:15px; line-height:1.6;}
+  .stats{display:flex; gap:26px; flex-wrap:wrap;}
+  .stat b{
+    display:block; font-family:'Chakra Petch',sans-serif; font-size:26px; line-height:1;
+  }
+  .stat span{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted);}
+
+  .stage{perspective:900px; display:grid; place-items:center; min-height:210px;}
+  .box{
+    width:130px;height:130px;position:relative;transform-style:preserve-3d;
+    animation:spin 16s linear infinite;
+  }
+  @keyframes spin{ from{transform:rotateX(-22deg) rotateY(0);} to{transform:rotateX(-22deg) rotateY(360deg);} }
+  .face{
+    position:absolute; inset:0;
+    background:linear-gradient(160deg,#ff6a5e,var(--red) 58%,#96110b);
+    border:1px solid rgba(255,255,255,.28);
+    display:grid; place-items:center; text-align:center;
+    font-family:'Chakra Petch',sans-serif; font-size:12px; letter-spacing:.18em; color:#fff;
+    box-shadow:inset 0 0 34px rgba(0,0,0,.4);
+  }
+  .face small{display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.1em;opacity:.75;margin-top:5px;}
+  .f-front {transform:translateZ(65px);}
+  .f-back  {transform:rotateY(180deg) translateZ(65px);}
+  .f-right {transform:rotateY(90deg) translateZ(65px);}
+  .f-left  {transform:rotateY(-90deg) translateZ(65px);}
+  .f-top   {transform:rotateX(90deg) translateZ(65px); background:linear-gradient(160deg,#ffb2ab,#ef2c24);}
+  .f-bot   {transform:rotateX(-90deg) translateZ(65px); background:#7d0d07;}
+  .tape{position:absolute;top:50%;left:0;right:0;height:14px;transform:translateY(-50%);background:rgba(255,255,255,.18);}
+
+  /* ---------- Tabs ---------- */
+  .tabs-bar{
+    margin:26px 0 6px; display:flex; gap:9px; overflow-x:auto; padding:6px 2px 12px;
+    scrollbar-width:thin;
+  }
+  .tab{
+    flex:none; cursor:pointer;
+    font-family:'Outfit',sans-serif; font-size:13.5px; font-weight:500;
+    color:#C6D0EC; text-decoration:none; white-space:nowrap;
+    padding:9px 16px; border-radius:999px;
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.02));
+    box-shadow:0 6px 0 -2px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.22);
+    transition:transform .16s ease, box-shadow .16s ease, color .16s ease;
+  }
+  .tab:hover, .tab:focus-visible{
+    transform:translateY(-3px);
+    box-shadow:0 12px 20px -10px var(--red), inset 0 1px 0 rgba(255,255,255,.3);
+    color:#fff;
+  }
+  .tab:active{transform:translateY(1px); box-shadow:0 3px 0 -2px rgba(0,0,0,.55);}
+  .tab.soon{color:var(--muted); border-style:dashed;}
+
+  .section-label{
+    display:flex; align-items:baseline; gap:12px; margin:24px 2px 14px;
+  }
+  .section-label h3{
+    font-family:'Chakra Petch',sans-serif; font-size:15px; letter-spacing:.2em; text-transform:uppercase; margin:0;
+  }
+  .section-label i{flex:1; height:1px; background:var(--line);}
+  .section-label em{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); font-style:normal;}
+
+  /* ---------- Cards ---------- */
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(252px,1fr)); gap:18px;
+    perspective:1100px;
+  }
+  .card{
+    position:relative; display:block; text-decoration:none; text-align:left;
+    color:inherit; font:inherit; cursor:pointer;
+    padding:20px 18px 18px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:linear-gradient(165deg, rgba(255,255,255,.09), rgba(17,26,50,.92));
+    transform-style:preserve-3d;
+    transition:transform .18s ease, box-shadow .25s ease, border-color .25s ease;
+    box-shadow:0 18px 30px -22px #000;
+    overflow:hidden;
+  }
+  .card::before{
+    content:""; position:absolute; inset:0 0 auto 0; height:4px;
+    background:var(--accent, var(--red));
+  }
+  .card::after{
+    content:""; position:absolute; width:190px; height:190px; right:-70px; top:-70px;
+    background:radial-gradient(circle, var(--accent, var(--red)), transparent 62%);
+    opacity:.20; filter:blur(6px); pointer-events:none;
+  }
+  .card:hover, .card:focus-visible{
+    border-color:rgba(255,255,255,.28);
+    box-shadow:0 34px 46px -26px #000, 0 0 0 1px rgba(255,255,255,.05);
+  }
+  .card:focus-visible{outline:2px solid var(--cyan); outline-offset:3px;}
+  .card-icon{
+    width:46px;height:46px;border-radius:14px; display:grid;place-items:center;
+    font-size:22px;
+    background:linear-gradient(150deg, rgba(255,255,255,.22), rgba(255,255,255,.04));
+    border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 12px 20px -12px var(--accent, var(--red));
+    transform:translateZ(38px);
+  }
+  .card h4{
+    margin:14px 0 6px; font-family:'Chakra Petch',sans-serif; font-weight:600; font-size:17.5px;
+    transform:translateZ(26px);
+  }
+  .card p{
+    margin:0 0 16px; font-size:13.2px; line-height:1.5; color:#A9B5D8; min-height:40px;
+    transform:translateZ(14px);
+  }
+  .card-foot{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.1em; color:var(--muted);
+    transform:translateZ(18px);
+  }
+  .pill{
+    padding:4px 10px; border-radius:999px; font-size:9.5px; letter-spacing:.14em;
+    border:1px solid rgba(255,255,255,.18); color:#fff;
+    background:var(--accent, var(--red));
+  }
+  .pill.wait{background:transparent; color:var(--amber); border-color:rgba(255,176,32,.5);}
+  .card.locked{background:linear-gradient(165deg, rgba(255,255,255,.05), rgba(17,26,50,.7)); border-style:dashed;}
+  .card.locked h4{color:#C3CDE9;}
+
+  .hidden{display:none !important;}
+
+  /* ---------- Coming soon page ---------- */
+  #comingSoon{
+    position:fixed; inset:0; z-index:40;
+    background:
+      radial-gradient(700px 420px at 50% 0%, rgba(255,176,32,.20), transparent 62%),
+      rgba(7,11,24,.97);
+    display:grid; place-items:center; padding:26px; text-align:center;
+    backdrop-filter:blur(6px);
+  }
+  .cs-inner{max-width:520px; perspective:800px;}
+  .cs-ring{
+    width:118px;height:118px;margin:0 auto 26px;border-radius:26px;
+    background:linear-gradient(150deg,var(--amber),#c46b00);
+    display:grid;place-items:center;font-size:44px;
+    box-shadow:0 26px 46px -22px rgba(255,176,32,.8), inset 0 2px 0 rgba(255,255,255,.5);
+    animation:float 4.5s ease-in-out infinite;
+    transform-style:preserve-3d;
+  }
+  @keyframes float{
+    0%,100%{transform:rotateX(14deg) rotateY(-16deg) translateY(0);}
+    50%{transform:rotateX(14deg) rotateY(16deg) translateY(-12px);}
+  }
+  #comingSoon h2{font-family:'Chakra Petch',sans-serif; font-size:34px; margin:0 0 10px; letter-spacing:.04em;}
+  #comingSoon p{color:#B9C4E4; font-size:15px; line-height:1.65; margin:0 0 26px;}
+  #comingSoon .slot{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--amber); letter-spacing:.16em; display:block; margin-bottom:16px;}
+  .btn{
+    display:inline-block; cursor:pointer; text-decoration:none;
+    font-family:'Outfit',sans-serif; font-size:14px; font-weight:500; color:#fff;
+    padding:12px 26px; border-radius:999px; border:1px solid rgba(255,255,255,.2);
+    background:linear-gradient(180deg,#ff5a4e,var(--red));
+    box-shadow:0 8px 0 -2px #8d0f09, 0 20px 30px -18px rgba(239,44,36,.9);
+    transition:transform .14s ease, box-shadow .14s ease;
+  }
+  .btn:hover{transform:translateY(-2px); box-shadow:0 10px 0 -2px #8d0f09, 0 26px 34px -18px rgba(239,44,36,.9);}
+  .btn:active{transform:translateY(4px); box-shadow:0 3px 0 -2px #8d0f09;}
+
+  footer{
+    margin-top:44px; padding-top:18px; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.08em;
+  }
+
+  .empty{
+    text-align:center; padding:44px 20px; color:var(--muted); font-size:14.5px;
+    border:1px dashed var(--line); border-radius:20px;
+  }
+
+  @media (max-width:820px){
+    .hero{grid-template-columns:1fr; text-align:left;}
+    .stage{order:-1;}
+    .search input{width:130px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="sky-grid" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div class="brand-text">
+        <h1>Skynet CRM</h1>
+        <p>Worldwide Express &middot; App Hub</p>
+      </div>
+    </div>
+    <div class="top-right">
+      <span class="live-dot"><i></i> 5 APPS LIVE</span>
+      <label class="search">
+        <span aria-hidden="true">🔍</span>
+        <input id="search" type="search" placeholder="Search an app" aria-label="Search an app" />
+      </label>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h2>All your Skynet tools,<br><span>open in one click.</span></h2>
+      <p>Pick a tab or a card below. Live tools open in a new window. Tools that are still being built show a short note instead.</p>
+      <div class="stats">
+        <div class="stat"><b id="statLive">5</b><span>Live tools</span></div>
+        <div class="stat"><b id="statSoon">9</b><span>In progress</span></div>
+        <div class="stat"><b>1</b><span>Login needed: none</span></div>
+      </div>
+    </div>
+    <div class="stage" aria-hidden="true">
+      <div class="box">
+        <div class="face f-front">SKYNET<small>WORLDWIDE EXPRESS</small><div class="tape"></div></div>
+        <div class="face f-back">CRM<small>APP HUB</small><div class="tape"></div></div>
+        <div class="face f-right">EXPRESS<small>DELHI · IN</small></div>
+        <div class="face f-left">DELIVERS<small>THE PARTNERSHIP</small></div>
+        <div class="face f-top">↑ THIS SIDE UP</div>
+        <div class="face f-bot"></div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="tabs-bar" id="tabsBar" aria-label="App tabs"></nav>
+
+  <div class="section-label">
+    <h3>Live tools</h3><i></i><em id="liveCount"></em>
+  </div>
+  <div class="grid" id="liveGrid"></div>
+
+  <div class="section-label" id="soonLabel">
+    <h3>Coming soon</h3><i></i><em id="soonCount"></em>
+  </div>
+  <div class="grid" id="soonGrid"></div>
+
+  <div class="empty hidden" id="empty">No app matches that name. Clear the search to see all tools.</div>
+
+  <footer>
+    <span>SKYNET EXPRESS INDIA PVT. LTD.</span>
+    <span>THE PARTNERSHIP THAT DELIVERS</span>
+  </footer>
+</div>
+
+<!-- Coming soon page -->
+<div id="comingSoon" class="hidden" role="dialog" aria-modal="true" aria-labelledby="csTitle">
+  <div class="cs-inner">
+    <div class="cs-ring" aria-hidden="true">🚧</div>
+    <span class="slot" id="csSlot">SLOT 06</span>
+    <h2 id="csTitle">Coming soon</h2>
+    <p id="csText">This tool is still being built. It will appear here as soon as it is ready.</p>
+    <button class="btn" id="csBack" type="button">Back to app hub</button>
+  </div>
+</div>
+
+<script>
+const APPS = [
+  { name:"Australia Rate Comparison", url:"https://mandalanil23.github.io/Australia-Rate-Comparison/",
+    icon:"🇦🇺", accent:"#2FD9E8", note:"Compare courier rates for Australia by weight and postcode." },
+  { name:"Hold Report", url:"https://mandalanil23.github.io/Hold-Report-Dashboard/",
+    icon:"📊", accent:"#EF2C24", note:"Track held shipments and clear them faster." },
+  { name:"Poster Maker", url:"https://mandalanil23.github.io/Skynet-Poster/",
+    icon:"🎨", accent:"#8B5CF6", note:"Make branded posters and photo frames in seconds." },
+  { name:"UTR Decoder", url:"https://mandalanil23.github.io/UTR-Decoder/",
+    icon:"🏦", accent:"#7BE05B", note:"Pull UTR numbers and payment mode from bank statements." },
+  { name:"Skynet Invoice Converter", url:"https://mandalanil23.github.io/Skynet-Invoice-Converter/",
+    icon:"🧾", accent:"#FFB020", note:"Turn vendor invoice PDFs into a ready Excel sheet." }
+];
+const SOON_COUNT = 9;
+
+const liveGrid = document.getElementById('liveGrid');
+const soonGrid = document.getElementById('soonGrid');
+const tabsBar  = document.getElementById('tabsBar');
+const cs       = document.getElementById('comingSoon');
+
+function code(i){ return 'SKY-' + String(i).padStart(3,'0'); }
+
+/* ---- Build live cards + tabs ---- */
+APPS.forEach((app, i) => {
+  const tab = document.createElement('a');
+  tab.className = 'tab';
+  tab.href = app.url;
+  tab.target = '_blank';
+  tab.rel = 'noopener';
+  tab.textContent = app.name;
+  tab.dataset.name = app.name.toLowerCase();
+  tabsBar.appendChild(tab);
+
+  const card = document.createElement('a');
+  card.className = 'card';
+  card.href = app.url;
+  card.target = '_blank';
+  card.rel = 'noopener';
+  card.style.setProperty('--accent', app.accent);
+  card.dataset.name = app.name.toLowerCase();
+  card.innerHTML =
+    '<div class="card-icon">' + app.icon + '</div>' +
+    '<h4>' + app.name + '</h4>' +
+    '<p>' + app.note + '</p>' +
+    '<div class="card-foot"><span>' + code(i+1) + '</span><span class="pill">OPEN</span></div>';
+  liveGrid.appendChild(card);
+});
+
+/* ---- Build coming soon cards + tabs ---- */
+for (let n = 1; n <= SOON_COUNT; n++) {
+  const label = 'Dummy ' + n;
+
+  const tab = document.createElement('button');
+  tab.type = 'button';
+  tab.className = 'tab soon';
+  tab.textContent = label;
+  tab.dataset.name = label.toLowerCase();
+  tab.addEventListener('click', () => openSoon(label, n));
+  tabsBar.appendChild(tab);
+
+  const card = document.createElement('button');
+  card.type = 'button';
+  card.className = 'card locked';
+  card.style.setProperty('--accent', '#FFB020');
+  card.dataset.name = label.toLowerCase();
+  card.innerHTML =
+    '<div class="card-icon">🚧</div>' +
+    '<h4>' + label + '</h4>' +
+    '<p>This slot is reserved for the next tool. Tap to see the status.</p>' +
+    '<div class="card-foot"><span>SLOT ' + String(n).padStart(2,'0') + '</span><span class="pill wait">COMING SOON</span></div>';
+  card.addEventListener('click', () => openSoon(label, n));
+  soonGrid.appendChild(card);
+}
+
+document.getElementById('statLive').textContent = APPS.length;
+document.getElementById('statSoon').textContent = SOON_COUNT;
+document.getElementById('liveCount').textContent = APPS.length + ' READY';
+document.getElementById('soonCount').textContent = SOON_COUNT + ' SLOTS';
+
+/* ---- Coming soon page ---- */
+function openSoon(label, n){
+  document.getElementById('csTitle').textContent = label + ' — coming soon';
+  document.getElementById('csSlot').textContent = 'SLOT ' + String(n).padStart(2,'0');
+  cs.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('csBack').focus();
+}
+function closeSoon(){
+  cs.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+document.getElementById('csBack').addEventListener('click', closeSoon);
+cs.addEventListener('click', e => { if (e.target === cs) closeSoon(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSoon(); });
+
+/* ---- 3D tilt on cards ---- */
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!reduce) {
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform =
+        'rotateY(' + (x * 13).toFixed(2) + 'deg) rotateX(' + (-y * 13).toFixed(2) + 'deg) translateY(-6px) scale(1.02)';
+    });
+    card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+  });
+}
+
+/* ---- Search ---- */
+const search = document.getElementById('search');
+const empty  = document.getElementById('empty');
+search.addEventListener('input', () => {
+  const q = search.value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll('[data-name]').forEach(el => {
+    const hit = el.dataset.name.includes(q);
+    el.classList.toggle('hidden', !hit);
+    if (hit && el.classList.contains('card')) shown++;
+  });
+  empty.classList.toggle('hidden', shown !== 0);
+});
+</script>
+</body>
+</html>
